@@ -8,18 +8,18 @@ RUN echo "/usr/bin/pwsh" >> /etc/shells && \
     echo "/bin/pwsh" >> /etc/shells
 
 # Install PowerShell and unzip on Photon
-RUN tdnf install -y powershell unzip
+RUN tdnf install -y powershell-6.0.1 unzip
 
 # Set working directory so stuff doesn't end up in /
 WORKDIR /root
 
 # Install PackageManagement and PowerShellGet
 # This is temporary until it is included in the PowerShell Core package for Photon
-RUN curl -O -J -L https://www.powershellgallery.com/api/v2/package/PackageManagement && \
+RUN curl -J -L https://www.powershellgallery.com/api/v2/package/PackageManagement/1.2.2 -o PackageManagement && \
     unzip PackageManagement -d /usr/lib/powershell/Modules/PackageManagement && \
     rm -f PackageManagement
 
-RUN curl -O -J -L https://www.powershellgallery.com/api/v2/package/PowerShellGet && \
+RUN curl -J -L https://www.powershellgallery.com/api/v2/package/PowerShellGet/2.0.1 -o PowerShellGet && \
     unzip PowerShellGet -d /usr/lib/powershell/Modules/PowerShellGet && \
     rm -f PowerShellGet
 
@@ -38,6 +38,7 @@ RUN Install-Module VMware.PowerCLI,PowerNSX,PowervRA
 # Add the PowerCLI Example Scripts and Modules
 # using ZIP instead of a git pull to save at least 100MB
 SHELL [ "bash", "-c"]
+RUN mkdir -p /var/opt/VMware/PowerCLI/ && echo '<Settings><Setting Name="ParticipateInCEIP" Value="False" /></Settings>' > /var/opt/VMware/PowerCLI/PowerCLI_Settings.xml
 RUN curl -o ./PowerCLI-Example-Scripts.zip -J -L https://github.com/vmware/PowerCLI-Example-Scripts/archive/master.zip && \
     unzip PowerCLI-Example-Scripts.zip && \
     rm -f PowerCLI-Example-Scripts.zip && \
