@@ -29,7 +29,7 @@ RUN mkdir -p /usr/lib/powershell/ref/ && ln -s /usr/lib/powershell/*.dll /usr/li
 # Install VMware modules from PSGallery
 SHELL [ "pwsh", "-command" ]
 RUN Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-RUN Install-Module VMware.PowerCLI,PowerNSX,PowervRA
+RUN Install-Module VMware.PowerCLI,PowerNSX,PowervRA, Pester
 
 # On by default to suppress nagging. Set to $false if you don't want to help us make PowerCLI better.
 # TODO: Investigate why we can't set this to either true or false.
